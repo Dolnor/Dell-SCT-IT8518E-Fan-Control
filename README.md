@@ -37,11 +37,11 @@ There are 6 fields total that you can alter. You can have as many profiles as yo
 
 - default="true" property for given profile will enable it at program start. If there are not profiles marked as default automatic control will be used.
 
-- <name> property as implied, is meant to specify a profile name that will appear in the list when you right click the tray icon.
+- name property as implied, is meant to specify a profile name that will appear in the list when you right click the tray icon.
 
-- <interval> should be in range from 1sec to 2sec (1000-2000ms), this property defines the time interval in between EC data checks.
+- interval should be in range from 1sec to 2sec (1000-2000ms), this property defines the time interval in between EC data checks.
 
-Each <point/> property consists of 3 sub properties that you have to define:
+Each point property consists of 3 sub properties that you have to define:
 
 - safe_temp is treated as the lowest average temperature from 16 iterations to initiate manual control. If temps is higher than safe_temp automatic control will be retained.
 
