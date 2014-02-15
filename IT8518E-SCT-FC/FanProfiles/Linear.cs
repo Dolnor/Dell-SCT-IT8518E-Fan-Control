@@ -7,7 +7,7 @@ namespace SCTFanControl.FanProfiles
 {
     class Override: IProfile
     {
-        Dictionary<float, float> points = new Dictionary<float,float>();
+        Dictionary<int, int> points = new Dictionary<int,int>();
 
         private int _intervalMs;
         private int _safe_temperature;
@@ -19,21 +19,18 @@ namespace SCTFanControl.FanProfiles
         {
             _name = config.SelectSingleNode("name").InnerText;
             _intervalMs = int.Parse(config.SelectSingleNode("interval").InnerText);
-            if (intervalMs > 2000 || intervalMs < 100) throw new Exception(String.Format("{0}: invalid interval (must be 100~2000ms)", name, intervalMs)); 
-            XmlNodeList cfgPoints = config.SelectNodes("point");
-            foreach(XmlNode cfgPoint in cfgPoints)
-            {
-                _safe_temperature = int.Parse(cfgPoint.Attributes["safe_temp"].Value);
-                if (_safe_temperature < 0 || _trip_temperature > 60) 
-                    throw new Exception(String.Format("{0}: invalid safe temperature (must be 0~60)", name, _safe_temperature));
+            _safe_temperature = int.Parse(config.SelectSingleNode("safetemp").InnerText);
+            _trip_temperature = int.Parse(config.SelectSingleNode("triptemp").InnerText);
+            _fanspeed = int.Parse(config.SelectSingleNode("steadyspeed").InnerText);
 
-                _trip_temperature = int.Parse(cfgPoint.Attributes["trip_temp"].Value);
-                if (_trip_temperature < 0  || _trip_temperature > 80) 
-                    throw new Exception(String.Format("{0}: invalid trip temperature (must be 0~80)", name, _trip_temperature));
-                
-                _fanspeed = int.Parse(cfgPoint.Attributes["steady_speed"].Value);
-                if (_fanspeed < 0) throw new Exception(String.Format("{0}: invalid fanspeed", name, _fanspeed));
-            }
+            if (intervalMs > 2000 || intervalMs < 500) 
+                throw new Exception(String.Format("{0}: invalid interval (must be 500~2000ms)", name, intervalMs));
+            if (_safe_temperature < 0 || _safe_temperature > 60)
+                throw new Exception(String.Format("{0}: invalid safe temperature (must be 0~60)", name, _safe_temperature));
+            if (_trip_temperature < 0 || _trip_temperature > 80)
+                throw new Exception(String.Format("{0}: invalid safe temperature (must be 0~80)", name, _trip_temperature));
+            if (_fanspeed < 0) 
+                throw new Exception(String.Format("{0}: invalid fanspeed", name, _fanspeed));
         }
 
         #region IProfile Members

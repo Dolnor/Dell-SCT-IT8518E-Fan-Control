@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <fanspeed>
   <profile default="true">
-    <name>Manual: Audible</name>
+    <name>Audible</name>
     <interval>1000</interval>
-    <point safe_temp="52" trip_temp="62" steady_speed="3000" />
+    <safetemp>52</safetemp>
+	<triptemp>62</triptemp>
+	<steadyspeed>3000</steadyspeed>
   </profile>
     <profile>
-    <name>Manual: Passive</name>
+    <name>Passive</name>
     <interval>1000</interval>
-    <point safe_temp="52" trip_temp="62" steady_speed="0" />
+    <safetemp>52</safetemp>
+	<triptemp>63</triptemp>
+	<steadyspeed>0</steadyspeed>
   </profile>
 </fanspeed>

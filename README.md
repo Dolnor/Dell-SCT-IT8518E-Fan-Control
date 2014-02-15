@@ -4,7 +4,7 @@ Windows Fan Control solution for Dell SecureCore Tiano firmware based laptops wi
 
 This software is a fork of https://github.com/Gabriel-LG/Acer7551GFanControl with knowledge from https://github.com/Dolnor/DELL-Tiano-IT8518E-Debug 
 and algorithms from https://github.com/Dolnor/Vostro-3450-Fan-Override applied to it. The Acer class has been renamed to better reflect the purpose of this software.
-Original copyright and licence notice have been retained.
+Original copyright and license notice have been retained.
 
 ## Usage 
 
@@ -20,20 +20,21 @@ The visual representation of fan speed is shown as a progress bar that is being 
 Hovering over the tray icon will bring up the name of currently active profile, sensor reading as well as current fan speed.
 
 Right clicking the icon brings up profiles defined in config.xml as well as default automatic mode option, choosing which will reset the fan to default behaviour.
-Upon exiting the application the automatic mode is being restored too!
+Upon exiting the application the automatic mode is being restored too! But not upon soft restarting the laptop! The fan speed bar will colorize depending on the active fan mode. If bios has control over fan the bar will be green, otherwise it will be white.
 
 
 ## Configuration
 
 The configuration in handled through use of config.xml which you can edit according to your desired fan behaviour. 
-When running on battery neither of these setting will have an effect. If you want to remove this restriction remove the *if (acin != 0)* check from code in IT8518EFC and recompile.
-There are 6 fields total that you can alter. You can have as many profiles as you want too...
+When running on battery neither of these setting will have an effect. There are 6 fields total that you can alter. You can have as many profiles as you want too...
 
-		<profile default="true">
-			<name>Manual: Audible</name>
-			<interval>1000</interval>
-			<point safe_temp="52" trip_temp="62" steady_speed="3000" />
-		</profile>
+  		<profile default="true">
+    		    <name>Audible</name>
+    	   	    <interval>1000</interval>
+    		    <safetemp>52</safetemp>
+		    <triptemp>62</triptemp>
+	  	    <steadyspeed>3000</steadyspeed>
+  		</profile>
 
 - default="true" property for given profile will enable it at program start. If there are not profiles marked as default automatic control will be used.
 
@@ -41,11 +42,11 @@ There are 6 fields total that you can alter. You can have as many profiles as yo
 
 - interval should be in range from 1sec to 2sec (1000-2000ms), this property defines the time interval in between EC data checks.
 
-Each point property consists of 3 sub properties that you have to define:
+- safetemp is treated as the lowest average temperature from 16 iterations to initiate manual control. If temps is higher than safe_temp automatic control will be retained.
 
-- safe_temp is treated as the lowest average temperature from 16 iterations to initiate manual control. If temps is higher than safe_temp automatic control will be retained.
+- triptemp is the highest temperature the manual control mode can be kept. If average temperature surpasses the trip temperature automatic control mode will be restored for system to cool down.
 
-- trip_temp is the highest temperature the manual control mode can be kept. If average temperature surpasses the trip temperature automatic control mode will be restored for system to cool down.
-
-- steady_speed is the desired rpm value that the fan should stick at when safe_temp threshold is met. On Vostro 3450 setting speed below 3000 won't stick, the fan will immediately drop rpm to 0 if you go past 2600 mark.
+- steadyspeed is the desired rpm value that the fan should stick at when safe_temp threshold is met. On Vostro 3450 setting speed below 3000 won't stick, the fan will immediately drop rpm to 0 if you go past 2600 mark.
 If you set this to 0 a passive cooling profile will be initiated, meaning the fan won't run at all times, but will only enable when average temp has reached a trip point.
+
+If you need the program to start with a delay (because the port driver takes some time to initialize) you can specify the -delay XX in the shortcut that you put in your Startup folder. Here XX is the number of seconds to delay the start of the application.

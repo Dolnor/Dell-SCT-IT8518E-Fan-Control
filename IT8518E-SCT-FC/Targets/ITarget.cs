@@ -8,13 +8,13 @@ namespace SCTFanControl.Targets
 {
     interface ITarget
     {
-        float GetTemperature();
+        int GetTemperature();
         int GetAverageTemp(); //added for evaluation purposes
-        int GetAcStatus();
+        int[] GetAcStatus();
         void SetBiosControl(Boolean b);
         bool GetBiosControl();        
         void SetFanSpeed(int tsafe, int ttrip, int speed);
-        float GetFanSpeed();
+        int GetFanSpeed();
         string Information { get; }
     }
 }

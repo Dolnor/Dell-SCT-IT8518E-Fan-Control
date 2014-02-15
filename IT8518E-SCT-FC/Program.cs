@@ -12,8 +12,10 @@ namespace SCTFanControl
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            if (args.Length == 2 && args[0] == "-delay")
+                System.Threading.Thread.Sleep(Int32.Parse(args[1])* 1000); // sleep for X sec before starting the app
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Regulator regulator = null;

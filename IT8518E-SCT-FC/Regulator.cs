@@ -10,7 +10,7 @@ namespace SCTFanControl
 {
     class Regulator
     {
-        public delegate void RegulatorUpdateHandler(Regulator regulator, float temperature, float fanSpeed, string text);
+        public delegate void RegulatorUpdateHandler(Regulator regulator, int temperature, int fanSpeed, int mode, string text);
         public event RegulatorUpdateHandler UpdateEvent;
         public delegate void RegulatorStoppedHandler(Regulator regulator, Exception e);
         //public event RegulatorStoppedHandler RegulatorStopped;
@@ -54,23 +54,34 @@ namespace SCTFanControl
                         /* 
                         // output average temp to tray icon for debugging
                         target.GetTemperature();
-                        float temperature = target.GetAverageTemp();
+                        int temperature = target.GetAverageTemp();
                         */
                         
-                        float temperature = target.GetTemperature(); // get max temp in celsius from EC
-                        float fanSpeed = target.GetFanSpeed(); // get fan speed as WORD from EC
+                        int temperature = target.GetTemperature(); // get max temp in celsius from EC
+                        int fanSpeed = target.GetFanSpeed(); // get fan speed as WORD from EC
+                        int mode = 0;
 
                         if (profile != null) // if profile is selected from menu or by default
                         {
-                            target.GetBiosControl(); // determine if fan is being controlled by EC
+                            bool auto = target.GetBiosControl(); // determine if fan is being controlled by EC
                             target.GetAverageTemp(); // compute average temp for monitoring in manual control
                             target.SetFanSpeed(profile.safe, profile.trip, profile.speed); // try to set fan speed according to profile
-                            if (UpdateEvent != null) UpdateEvent(this, temperature, fanSpeed, profile.name+"\n"+target.Information);
+
+                            if (auto) { mode = 0;}
+                            else { mode = 1;}
+                            if (profile.speed == 0 && mode == 1) // bar won't colorize if silent mode used and fan has locked - append mode to tooltip
+                            {
+                                if (UpdateEvent != null) UpdateEvent(this, temperature, fanSpeed, mode, "Profile: " + profile.name + ", Mode: Locked\n" + target.Information);
+                            }
+                            else
+                            {
+                                if (UpdateEvent != null) UpdateEvent(this, temperature, fanSpeed, mode, "Profile: " + profile.name + "\n" + target.Information);
+                            }
                         }
                         else // we should use automatic control from EC
                         {
                             target.SetBiosControl(true);
-                            if (UpdateEvent != null) UpdateEvent(this, temperature, fanSpeed, "Automatic: IT8518E EC\n"+target.Information);
+                            if (UpdateEvent != null) UpdateEvent(this, temperature, fanSpeed, mode, "Profile: Automatic\n"+target.Information);
                         }
                     }
                     catch (TimeoutException e)
